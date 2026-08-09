@@ -1,0 +1,32 @@
+# Unified gitignore for library-management-system
+
+# IDE files and folders
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+bin/
+
+# Flutter/Dart specific
+frontend/.dart_tool/
+frontend/build/
+frontend/.packages
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/pubspec.lock
+
+# Java/Maven specific
+backend/target/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/*.log
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
