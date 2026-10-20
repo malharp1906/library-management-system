@@ -1,6 +1,29 @@
 # Library Management System
 
-A modern full-stack web and mobile application for managing library books. The system is built with a **Flutter** frontend and a **Spring Boot** backend integrated with a **PostgreSQL** database.
+A full-stack application for managing a library's book inventory. A cross-platform **Flutter** client talks to a **Spring Boot** REST API backed by **PostgreSQL**.
+
+![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?logo=springboot&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+## Features
+
+- Browse the full book inventory
+- Add new books (title, author, ISBN)
+- Delete books
+- Full CRUD REST API (create, read, update, delete) with `201`/`404` status handling
+- One Flutter codebase for web, Windows desktop, Android and iOS
+- CORS enabled so the Flutter web app can call the API from a different port
+
+## How it fits together
+
+```
+Flutter app  --HTTP/JSON-->  Controller  ->  Service  ->  Repository  ->  PostgreSQL
+                             (Spring Boot, layered Controller-Service-Repository)
+```
+
+The backend follows a layered **Controller -> Service -> Repository** design with JPA/Hibernate, which keeps each layer small and testable.
 
 ---
 
@@ -21,7 +44,7 @@ library-management-system/
 ## Architecture & Technology Stack
 
 - **Frontend**: Flutter (Dart) - supports Web, Windows Desktop, Android, and iOS.
-- **Backend**: Spring Boot (Java 17/21/25) - REST API with JPA/Hibernate.
+- **Backend**: Spring Boot 4 (Java 25) - REST API with JPA/Hibernate.
 - **Database**: PostgreSQL - stores inventory tables with auto-incrementing identity schemas.
 
 ---
@@ -54,7 +77,7 @@ The backend exposes the following REST endpoints under the `/api/books` namespac
 ### Prerequisites
 Make sure you have the following installed on your local machine:
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) (v3.19.0 or higher recommended)
-- [Java Development Kit (JDK)](https://adoptium.net/) (JDK 17 or higher)
+- [Java Development Kit (JDK)](https://adoptium.net/) (JDK 25, as set in `backend/pom.xml`)
 - [Maven](https://maven.apache.org/) (included via `./mvnw` wrapper in backend)
 - [PostgreSQL](https://www.postgresql.org/download/) database server
 
@@ -69,11 +92,20 @@ Make sure you have the following installed on your local machine:
    ```
 
 2. **Configure Environment**:
-   Navigate to `backend/src/main/resources/application.properties` and verify your PostgreSQL credentials:
-   ```properties
-   spring.datasource.url=jdbc:postgresql://localhost:5432/library_db
-   spring.datasource.username=your_postgres_username
-   spring.datasource.password=your_postgres_password
+   The app reads database settings from environment variables, so no credentials are stored in the repo.
+
+   | Variable | Required | Default |
+   | :--- | :--- | :--- |
+   | `DB_PASSWORD` | yes | none |
+   | `DB_USERNAME` | no | `postgres` |
+   | `DB_URL` | no | `jdbc:postgresql://localhost:5432/library_db` |
+
+   ```bash
+   # macOS / Linux
+   export DB_PASSWORD=your_postgres_password
+
+   # Windows PowerShell
+   $env:DB_PASSWORD = "your_postgres_password"
    ```
 
 3. **Build & Run**:
@@ -113,3 +145,18 @@ Make sure you have the following installed on your local machine:
 
 - **CORS Configuration**: The backend has `@CrossOrigin(origins = "*")` configured on `BookController.java` to support requests from the Flutter Web app running on different local dev ports.
 - **Auto-Incrementing IDs**: The backend entity maps the primary key using `@GeneratedValue(strategy = GenerationType.IDENTITY)` which automatically generates IDs in PostgreSQL when a book is created by the frontend.
+
+---
+
+## Roadmap
+
+- [ ] Update-book screen in the Flutter client (the `PUT` endpoint already exists)
+- [ ] Search and filter
+- [ ] Input validation and clearer error responses
+- [ ] Unit and integration tests for the service layer
+- [ ] Authentication
+- [ ] Docker Compose for one-command startup
+
+## License
+
+[MIT](LICENSE)
